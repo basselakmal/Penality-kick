@@ -1,61 +1,42 @@
-                 ;Author:Khaled Mohamad
-;Date:
-;comment  
-;---------------------------   
+ include macros.inc
+.MODEL SMALL
+.STACK 64
+.DATA 
+ ask_p1_name db 'Player 1 Name: ','$'
+ ask_p2_name db 'Player 2 Name: ','$'
+ score_msg db "'s score:$"
+ p1_name db 30, ?, 30 dup('$')
+ p2_name db 30, ?, 30 dup('$')
+  
+ p1_score db 0  ;Intially player 1 score is 0
+ p2_score db 1  ;Intially player 2 score is 0
+ 
+ GoalDim db 70, 3, 73, 11 ;X1,Y1, X2,Y2
+ current_player db 1
 
-PrintStr MACRO Str
+.CODE                  
+MAIN    PROC   
+    
+    mov ax, @DATA
+    mov ds, ax
+    mov ax, 0
+    
+    mov ah, 0
+    mov al, 3
+    int 10h 
+    
+    GetNames
+    
+    mov current_player, 2 ;Set player to player 2
         
-        mov ah,9
-        mov dx, offset str
-        int 21h
-              
-PrintStr ENDM  
+    DrawInterface
+    
+    WriteOneFifthScreen                  
+    
+    
+    
+    mov ah, 4ch
+    int 21h
+MAIN        ENDP    
 
-ReadStr MACRO Read
-        
-        mov ah,0Ah
-        mov dx, offset Read
-        int 21h
-            
-ReadStr ENDM 
-
-deci MACRO                      
-            push cx
-            xor ah, ah 
-            mov cl, 10 
-            div cl 
-            add ax, 3030h
-            pop cx 
-deci ENDM 
-
-        .MODEL SMALL
-        .STACK 64
-        .DATA
-   mes1 db 'Enter the first number:$'
-   mes2 db 10,13,'Enter the second number:$'
-   Entr db 10,13
-   in1  db 3,?,3 dup('$')
-   in2  db 3,?,3 dup('$') 
-   SSS  db '?-?=  ','$'
-        .code
-MAIN    PROC FAR               
-        MOV AX,@DATA
-        MOV DS,AX 
-       
-        PrintStr mes1
-        ReadStr in1
-        
-        PrintStr mes2
-        ReadStr in2
-        
-        mov cl,in1[2]
-        mov SSS[0],cl
-        mov ch,in2[2]   
-        mov SSS[2],ch
-        
-        PrintStr Entr        
-        PrintStr SSS                       
-        
-        hlt
-MAIN    ENDP
-        END MAIN
+END MAIN
